@@ -80,7 +80,7 @@ char g_sample_cmd_list[] = {
 vector<string> g_usb_path_filter;
 vector<string> g_usb_serial_no_filter;
 
-int g_verbose = 0;
+int g_verbose = 1;
 static bool g_start_usb_transfer;
 
 bmap_mode g_bmap_mode = bmap_mode::Default;
