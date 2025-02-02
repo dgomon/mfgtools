@@ -380,7 +380,7 @@ int SDPBootCmd::run(CmdCtx *ctx)
 	SDPBootlogCmd log(nullptr);
 	log.run(ctx);
 
-	printf("XXX SDPBootCmd wip 4\n");
+	// printf("XXX SDPBootCmd wip 4\n");
 
 	return 0;
 }
