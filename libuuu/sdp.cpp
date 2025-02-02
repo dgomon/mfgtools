@@ -341,6 +341,7 @@ int SDPBootCmd::run(CmdCtx *ctx)
 
 	SDPWriteCmd wr((char *)str.c_str());
 	if (wr.parser()) return -1;
+	printf("XXX SDPBootCmd::run: calling SDPWriteCmd.wr str.c_str()=%s\n", str.c_str());	
 	if (wr.run(ctx)) return -1;
 
 	str = "SDP: jump -f ";
@@ -357,9 +358,11 @@ int SDPBootCmd::run(CmdCtx *ctx)
 
 	printf("XXX SDPBootCmd wip 1\n");
 
+	printf("XXX SDPBootCmd::run: çreating SDPJumpCmd str.c_str()=%s\n", str.c_str());	
 	SDPJumpCmd jmp((char *)str.c_str());
 	if (!m_nojump)
 	{
+		printf("XXX SDPBootCmd::run: calling SDPJumpCmd.wr str.c_str()=%s\n", str.c_str());	
 		if (jmp.parser()) return -1;
 		if (jmp.run(ctx)) return -1;
 	}
@@ -368,6 +371,7 @@ int SDPBootCmd::run(CmdCtx *ctx)
 
 	if (m_barebox || is_barebox_img())
 	{
+		printf("XXX SDPBootCmd loading barebox\n");
 		if (load_barebox(ctx)) return -1;
 	}
 
