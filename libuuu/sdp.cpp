@@ -843,7 +843,7 @@ SDPBootlogCmd::SDPBootlogCmd(char *p) : SDPCmdBase(p)
 int SDPBootlogCmd::run(CmdCtx *ctx)
 {
 	printf("XXX SDPBootlogCmd::run: entered\n");
-	HIDTrans dev{4000};
+	HIDTrans dev{2000};
 
 	if (dev.open(ctx->m_dev)) {
 		printf("XXX SDPBootlogCmd::run: open failed\n");
