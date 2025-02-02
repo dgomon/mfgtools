@@ -1,0 +1,9 @@
+# Add the source directory if needed
+directory /mnt/lvm_aosp/mfgtools/uuu/uuu
+
+# Set a breakpoint at uuu.cpp:887
+break uuu.cpp:883
+
+# Start the program
+run
+

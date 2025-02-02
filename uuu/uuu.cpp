@@ -659,7 +659,7 @@ int progress(uuu_notify nt, void *p)
 			str.format("\rSuccess %d    Failure %d    ", g_overall_okay, g_overall_failure);
 
 			if (g_map_path_nt.empty())
-				str += "Wait for Known USB Device Appear...";
+				str += "Wait for Known USB Device Appear... 1";
 
 			if (!g_usb_path_filter.empty())
 			{
@@ -880,8 +880,14 @@ int set_ignore_serial_number()
 #endif
 }
 
+//#define DELAY_MS 20000
+
 int main(int argc, char **argv)
 {
+//    printf("XXX Sleeping for %dms", DELAY_MS);
+//    std::this_thread::sleep_for(std::chrono::milliseconds(DELAY_MS));
+//    printf("XXX resuming");
+
 	if (auto_complete(argc, argv) == 0)
 		return 0;
 
@@ -1149,14 +1155,14 @@ int main(int argc, char **argv)
 			printf("\n%sRun built-in script:%s\n %s\n\n", g_vt_boldwhite, g_vt_default, cmd_script.c_str());
 
 		if (!shell)
-			cout << "Wait for Known USB Device Appear...";
+			cout << "Wait for Known USB Device Appear... 2";
 
 		print_usb_filter();
 
 		printf("\n");
 	}
 	else {
-		cout << "Wait for Known USB Device Appear...";
+		cout << "Wait for Known USB Device Appear... 3";
 		print_usb_filter();
 		cout << "\r";
 		cout << "\x1b[?25l";
@@ -1170,6 +1176,7 @@ int main(int argc, char **argv)
 
 	if (!cmd.empty())
 	{
+	    printf("XXX running command: %s\n", cmd.c_str());
 		ret = uuu_run_cmd(cmd.c_str(), dryrun);
 
 		for (size_t i = 0; i < g_map_path_nt.size()+3; i++)
@@ -1182,26 +1189,37 @@ int main(int argc, char **argv)
 		runshell(shell);
 		return ret;
 	}
+	else {
+	    printf("XXX command is empty\n");
+	}
 
-	if (!cmd_script.empty())
+	if (!cmd_script.empty()) {
+	    printf("XXX 2\n");
 		ret = uuu_run_cmd_script(cmd_script.c_str(), dryrun);
-	else
+	}
+	else {
+	    printf("XXX 3 detecting file %s\n", filename.c_str());
 		ret = uuu_auto_detect_file(filename.c_str());
+	}
 
 	if (ret)
 	{
+	    printf("XXX 4\n");
 		ret = runshell(shell);
 		if(ret)
 			cout << g_vt_red << "\nError: " << g_vt_default <<  uuu_get_last_err_string();
+		printf("XXX main returning 5\n");	
 		return ret;
 	}
 
+    printf("XXX 5\n");
 	if (uuu_wait_uuu_finish(deamon, dryrun))
 	{
 		cout << g_vt_red << "\nError: " << g_vt_default << uuu_get_last_err_string();
 		return -1;
 	}
 
+    printf("XXX 6\n");
 	runshell(shell);
 
 	/*Wait for the other thread exit, after send out CMD_DONE*/

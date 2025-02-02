@@ -268,10 +268,14 @@ int CmdList::run_all(CmdCtx *p, bool dry)
 
 		nt.type = uuu_notify::NOTIFY_CMD_INDEX;
 		nt.index = i;
+		printf("XXX processing command: %s\n", (*it)->get_cmd().c_str());
+		
+		printf("XXX calling NOTIFY_CMD_INDEX\n");
 		call_notify(nt);
 
 		nt.type = uuu_notify::NOTIFY_CMD_START;
 		nt.str = (char *)(*it)->get_cmd().c_str();
+		printf("XXX calling NOTIFY_CMD_START: nt.str=%s\n", nt.str);
 		call_notify(nt);
 
 		if (dry)
@@ -279,8 +283,11 @@ int CmdList::run_all(CmdCtx *p, bool dry)
 		else
 			ret = (*it)->run(p);
 
+
+		
 		nt.type = uuu_notify::NOTIFY_CMD_END;
 		nt.status = ret;
+		printf("XXX calling NOTIFY_CMD_END, status=%d\n", nt.status);
 		call_notify(nt);
 		if (ret)
 			return ret;
@@ -1142,11 +1149,12 @@ int uuu_auto_detect_file(const char *filename)
 			set_current_dir(fn.substr(0, pos + 1));
 
 		g_cmd_list_file = fn.substr(pos+1);
-
+        printf("XXX uuu_auto_detect_file 1: returning %s\n", g_cmd_list_file.c_str());
 		return parser_cmd_list_file(pData);
 	}
 
 	//flash.bin or uboot.bin
+	printf("XXX uuu_auto_detect_file 2: returning %s\n", fn.c_str());
 	return added_default_boot_cmd(fn.c_str());
 }
 

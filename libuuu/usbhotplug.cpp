@@ -335,28 +335,34 @@ static int run_usb_cmds(ConfigItem *item, libusb_device *dev, short bcddevice)
 	str += "-";
 	str += get_device_serial_no(dev);
 	nt.str = (char*)str.c_str();
+	printf("XXX run_usb_cmds calling NOTIFY_DEV_ATTACH: nt.str=%s\n", nt.str);
 	call_notify(nt);
 
 	CmdUsbCtx ctx;
 	ctx.m_config_item = item;
 	ctx.m_current_bcd = bcddevice;
 
+	printf("XXX run_usb_cmds calling look_for_match_device\n");
 	if ((ret = open_libusb(dev, &(ctx.m_dev))))
 	{
+		printf("XXX run_usb_cmds open_libusb failed\n");
 		nt.type = uuu_notify::NOTIFY_CMD_END;
 		nt.status = -1;
 		call_notify(nt);
 		return ret;
 	}
 
+	printf("XXX run_usb_cmds calling run_cmds, item->m_protocol=%s\n", item->m_protocol.c_str());
 	ret = run_cmds(item->m_protocol.c_str(), &ctx);
 	g_known_device_state = KnownDeviceDone;
 
 	nt.type = uuu_notify::NOTIFY_THREAD_EXIT;
+	printf("XXX run_usb_cmds calling NOTIFY_THREAD_EXIT\n");
 	call_notify(nt);
-
+	
 	libusb_unref_device(dev); //ref_device when start thread
 	clear_env();
+	printf("XXX run_usb_cmds run_usb_cmds returning %d\n", ret);
 	return ret;
 }
 

@@ -302,6 +302,7 @@ int SDPBootCmd::load_barebox(CmdCtx *ctx)
 
 int SDPBootCmd::run(CmdCtx *ctx)
 {
+	printf("XXX SDPBootCmd::run: entered\n");
 	string str;
 	str = "SDP: dcd -f ";
 	str += m_filename;
@@ -325,6 +326,7 @@ int SDPBootCmd::run(CmdCtx *ctx)
 	}
 
 	if (dcd.parser()) return -1;
+	printf("XXX SDPBootCmd::run: calling dcd.run\n");
 	if (dcd.run(ctx)) return -1;
 
 	str = "SDP: write -f ";
@@ -353,6 +355,8 @@ int SDPBootCmd::run(CmdCtx *ctx)
 		str += std::to_string(m_scan_limited);
 	}
 
+	printf("XXX SDPBootCmd wip 1\n");
+
 	SDPJumpCmd jmp((char *)str.c_str());
 	if (!m_nojump)
 	{
@@ -360,12 +364,17 @@ int SDPBootCmd::run(CmdCtx *ctx)
 		if (jmp.run(ctx)) return -1;
 	}
 
+    printf("XXX SDPBootCmd wip 2\n");
+
 	if (m_barebox || is_barebox_img())
 	{
 		if (load_barebox(ctx)) return -1;
 	}
 
+	printf("XXX SDPBootCmd wip 3\n");
+
 	SDPBootlogCmd log(nullptr);
+//	printf("XXX SDPBootCmd wip 4\n");
 	log.run(ctx);
 
 	return 0;
@@ -833,10 +842,13 @@ SDPBootlogCmd::SDPBootlogCmd(char *p) : SDPCmdBase(p)
 
 int SDPBootlogCmd::run(CmdCtx *ctx)
 {
-	HIDTrans dev{2000};
+	printf("XXX SDPBootlogCmd::run: entered\n");
+	HIDTrans dev{4000};
 
-	if (dev.open(ctx->m_dev))
+	if (dev.open(ctx->m_dev)) {
+		printf("XXX SDPBootlogCmd::run: open failed\n");
 		return -1;
+	}
 
 	HIDReport report(&dev);
 
@@ -849,13 +861,17 @@ int SDPBootlogCmd::run(CmdCtx *ctx)
 	int ret;
 	while (1)
 	{
+		printf("XXX SDPBootlogCmd::run: reading\n");
 		ret = report.read(v);
-		if (ret)
+		if (ret) {
+			printf("XXX SDPBootlogCmd::run: read failed\n");
 			return 0;
+		}
 		else
 		{
 			nt.str = (char*)(v.data() + 4);
 			v[5] = 0;
+			printf("XXX SDPBootlogCmd::run: calling notify, nt.str=%s\n", nt.str);
 			call_notify(nt);
 			continue;
 		}
