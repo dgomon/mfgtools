@@ -846,7 +846,7 @@ int SDPBootlogCmd::run(CmdCtx *ctx)
 	HIDTrans dev{2000};
 
 	if (dev.open(ctx->m_dev)) {
-		printf("XXX SDPBootlogCmd::run: open failed\n");
+		printf("!!! ERROR HERE SDPBootlogCmd::run: open failed!!!\n");
 		return -1;
 	}
 
